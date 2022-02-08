@@ -48,6 +48,8 @@ let theLetterA : int -> char * int = empty ('A', 1);;
 // Exercise 1.12
 let add newPos (letter, pointValue) word = fun pos -> if pos = newPos then (letter, pointValue) else word pos
 let theLettersAB = add 1 ('B', 3) theLetterA
+let theLettersAB2 = empty ('A', 1) |> add 1 ('B', 3)
+
 theLettersAB 1
 
 // Exercise 1.13
