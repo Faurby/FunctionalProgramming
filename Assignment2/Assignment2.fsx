@@ -51,7 +51,8 @@ let implodeRev (a:char list) = List.foldBack (fun elem acc -> acc + string(elem)
 let toUpper (s:string) = s |> explode1 |> List.map (fun x -> System.Char.ToUpper x) |> implode
 
 // Exercise 2.8
-let rec ack = function
+let rec ack = 
+  function
   | (m, n) when m = 0 -> n+1
   | (m, n) when m > 0 && n = 0 -> ack (m-1, 1)
   | (m, n) when m > 0 && n > 0 -> ack ((m-1), ack(m, n-1))
@@ -105,3 +106,27 @@ let oddConsonants:squareFun = fun word _ acc ->
   if (countConsonants word) % 2 <> 0 then acc * -1 
   else acc
 
+// Exercise 2.15
+type square = (int * squareFun) list
+let SLS: square = [(0, singleLetterScore)];;
+let DLS: square = [(0, doubleLetterScore)];;
+let TLS: square = [(0, tripleLetterScore)];;
+let DWS: square = SLS @ [(1, doubleWordScore)];;
+let TWS: square = SLS @ [(1, tripleWordScore)];;
+
+let calculatePoints (lst: square list) (w: word) =
+  let a =
+    List.mapi (fun i x -> List.map (fun (a,b) -> (a, b w i)) x) lst
+    |> List.fold (@) []
+    |> List.sortBy (fun x -> fst x)
+    |> List.map (fun x -> snd x)
+    |> List.fold (>>) id
+  a 0
+
+// or
+let calculatePoints2 (lst: square list) (w: word) =
+    List.mapi (fun i x -> List.map (fun (a,b) -> (a, b w i)) x) lst
+    |> List.fold (@) []
+    |> List.sortBy (fun x -> fst x)
+    |> List.map (fun x -> snd x)
+    |> List.fold (fun acc f' -> f' acc) 0
