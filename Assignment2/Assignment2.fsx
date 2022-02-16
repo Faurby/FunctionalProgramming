@@ -114,5 +114,19 @@ let TLS: square = [(0, tripleLetterScore)];;
 let DWS: square = SLS @ [(1, doubleWordScore)];;
 let TWS: square = SLS @ [(1, tripleWordScore)];;
 
-let calculatePoints (lst: square list) (w: word) = 
-  List.mapi 
+let calculatePoints (lst: square list) (w: word) =
+  let a =
+    List.mapi (fun i x -> List.map (fun (a,b) -> (a, b w i)) x) lst
+    |> List.fold (@) []
+    |> List.sortBy (fun x -> fst x)
+    |> List.map (fun x -> snd x)
+    |> List.fold (>>) id
+  a 0
+
+// or
+let calculatePoints2 (lst: square list) (w: word) =
+    List.mapi (fun i x -> List.map (fun (a,b) -> (a, b w i)) x) lst
+    |> List.fold (@) []
+    |> List.sortBy (fun x -> fst x)
+    |> List.map (fun x -> snd x)
+    |> List.fold (fun acc f' -> f' acc) 0
