@@ -63,3 +63,6 @@ let rec arithEval (a: aExp) (w: word) (s: Map<string, int>) =
   | Sub (x, y) -> (arithEval x w s) - (arithEval y w s)
   | Mul (x, y) -> (arithEval x w s) * (arithEval y w s)
   | N x -> x
+
+// let mylist =  [("a", 1); ("b", 2); ("c", 4)]
+// Map.fold (fun acc _ value -> acc + value ) 0 mylist
