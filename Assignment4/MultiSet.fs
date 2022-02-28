@@ -1,6 +1,4 @@
-namespace MyModules
-
-module MultiSet = 
+module MultiSet
 
   type MultiSet<'a when 'a : comparison> = MS of Map<'a, uint32> 
 
@@ -22,45 +20,27 @@ module MultiSet =
 
   // Yellow exercises (multiset)
   let ofList lst = List.fold (fun acc elem -> addSingle elem acc) empty lst
-  let toList s = fold (fun acc elem num -> List.init (int32 num) (fun _ -> elem) @ acc) [] s
+  let toList s = foldBack (fun elem num acc -> List.init (int32 num) (fun _ -> elem) @ acc) s []
   let map f s = ofList (List.map f (toList s))
-  let union (s1: MultiSet<'a>) (s2: MultiSet<'a>) =
-        fold (fun acc elem s1current ->
+  let union s1 s2 = fold (fun acc elem s1current ->
             let s2current = (numItems elem acc)
-
             if (s2current < s1current) then
                 remove elem s2current acc |> add elem s1current
-
             else empty |> add elem s2current) s2 s1
 
-  let sum (s1: MultiSet<'a>) (s2: MultiSet<'a>) =
-      fold (fun acc elem s1current ->
-          let s2current = (numItems elem s2)
-          add elem (s1current + s2current) acc) empty s1
+  let sum s1 s2 = fold (fun acc elem s1current -> 
+            let s2current = (numItems elem s2) 
+            add elem (s1current + s2current) acc) empty s1
     
-  let subtract (s1: MultiSet<'a>) (s2: MultiSet<'a>) =
+  let subtract s1 s2 =
       fold (fun acc elem _ ->
           remove elem (numItems elem s2) acc) s1 s2
 
-
-
-  let intersection (s1: MultiSet<'a>) (s2: MultiSet<'a>) =
+  let intersection s1 s2 =
     fold (fun acc elem s1current ->
         let s2current = (numItems elem s2)
         if s1current = s2current then
             add elem s1current acc
         else
             empty   
-        
         ) empty s1
-
-module Dicitonary = 
-
-    type Dictionary = DI of Set<string>
-
-    let empty (_ : unit) = DI(Set.empty<string>)
-
-    let insert (s: string) (DI(set)) = DI(Set.add(s) set)
-
-    let lookup (s: string) (DI(set)) = Set.contains(s) set
-
