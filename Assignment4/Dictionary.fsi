@@ -1,0 +1,3 @@
+module Dicitonary
+
+  type Dictionary

@@ -1,4 +1,4 @@
-﻿open MultiSet
+﻿open MyModules.MultiSet
 
 // Green Exercises Multiset
 printf "%A\n" (empty)

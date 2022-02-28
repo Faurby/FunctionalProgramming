@@ -1,4 +1,6 @@
-module MultiSet
+namespace MyModules
+
+module MultiSet = 
 
   type MultiSet<'a when 'a : comparison>
 
@@ -20,3 +22,5 @@ module MultiSet
   val toList : MultiSet<'a> -> 'a list
   val map : ('a -> 'b) -> MultiSet<'a> -> MultiSet<'b>
   val union : MultiSet<'a> -> MultiSet<'a> -> MultiSet<'a>
+
+  
