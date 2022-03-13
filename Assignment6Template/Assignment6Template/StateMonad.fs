@@ -68,12 +68,12 @@
         S (fun s -> Success (s.word.Length, s))  
 
     let characterValue (pos : int) : SM<char> =
-        S (fun s -> if pos > s.word.Length 
+        S (fun s -> if pos >= s.word.Length || pos < 0
                     then Failure (IndexOutOfBounds pos) 
                     else Success ((fst s.word.[pos]), s)) 
 
     let pointValue (pos : int) : SM<int> =
-        S (fun s -> if pos > s.word.Length 
+        S (fun s -> if pos >= s.word.Length || pos < 0 
                     then Failure (IndexOutOfBounds pos) 
                     else Success ((snd s.word.[pos]) , s))      
 
