@@ -2,10 +2,9 @@
 let sum a b =
     let rec aux (acc : int) = 
         function
-        | x when x >= b -> acc + b
-        | x -> aux (acc + x) (x+1)
+        | x when x = b -> acc + b
+        | x -> aux (acc + (a + x)) (x+1)
     aux a 0
-sum 0 10
 
 // Exercise 5.2
 let length (a: 'a list) =
@@ -46,7 +45,6 @@ let factA x =
 // 62ms when given 1000000
 
 // Exercise 5.5
-#time
 let fibW x =
     let mutable res1 = 0
     let mutable res2 = 1
