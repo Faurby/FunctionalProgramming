@@ -99,12 +99,12 @@
     do btref := choice [andParse; orParse; BProd]
 
     let equalParse = binop (pchar '=') AexpParse AexpParse |>> AEq <?> "AEq"
-    let notEqual = binop (pstring "<>") AexpParse AexpParse |>> (fun (x, y) -> Not(AEq(x, y))) <?> "Not Equal"
+    let notEqual = binop (pstring "<>") AexpParse AexpParse |>> (fun (x, y) -> x .<>. y) <?> "Not Equal"
     let lessThanParse = binop (pchar '<') AexpParse AexpParse |>> ALt <?> "ALt"
-    let biggerThanOrEqualParse = binop (pstring ">=") AexpParse AexpParse |>> (fun (x,y) -> Not(ALt(x, y))) <?> "BiggerOrEqual"
-    let biggerThan = binop (pchar '>') AexpParse AexpParse |>> (fun (x,y) -> Conj(Not (AEq (x, y)), Not (ALt(x,y)))) <?> "Great than"
-    let lessOrEqual = binop (pstring "<=") AexpParse AexpParse |>> (fun (x,y) -> Not (Conj (Not (ALt(x,y)), Not (AEq(x,y))))) <?> "lessOrEqual"
-    do bpref := choice [notEqual; lessThanParse; biggerThanOrEqualParse; biggerThan; lessOrEqual; equalParse; BAtom]
+    let biggerThanOrEqualParse = binop (pstring ">=") AexpParse AexpParse |>> (fun (x, y) -> x .>=. y) <?> "BiggerOrEqual"
+    let biggerThan = binop (pchar '>') AexpParse AexpParse |>> (fun (x,y) -> x .>. y) <?> "Great than"
+    let lessOrEqual = binop (pstring "<=") AexpParse AexpParse |>> (fun (x,y) -> x .<=. y) <?> "lessOrEqual"
+    do bpref := choice [equalParse; notEqual; lessThanParse; lessOrEqual; biggerThan; biggerThanOrEqualParse; BAtom]
 
     let trueParse = pTrue |>> (fun _ -> TT) <?> "True"
     let falseParse = pFalse |>> (fun _ -> FF) <?> "False"
@@ -113,11 +113,18 @@
     let isVowel = unop (pIsVowel) CexpParse |>> IsVowel <?> "IsVowel"
     let isDigit = unop (pIsDigit) CexpParse |>> IsDigit <?> "IsDigit"
     let parParse = parenthesise BTerm
-    do baref := choice [trueParse; falseParse; notParse; isLetterPrase; isVowel; isDigit; parParse]
+    do baref := choice [notParse; isLetterPrase; isVowel; isDigit; trueParse; falseParse; parParse]
 
     let BexpParse = BTerm
 
-    let stmntParse = pstring "not implemented"
+    let SParse, sref = createParserForwardedToRef<stm>()
+
+    let declareParse = unop (pdeclare .>*>. spaces1) pid |>> Declare <?> "Declare"
+    let assignParse = binop (pstring ":=") pid AexpParse |>> Ass <?> "Assign"
+    let seqParse = binop (pchar ';') SParse SParse |>> Seq <?> "Seq"
+    
+    do sref := choice [assignParse; declareParse; seqParse]
+    let stmntParse = SParse
 
 (* These five types will move out of this file once you start working on the project *)
     type coord      = int * int
