@@ -28,7 +28,7 @@
     val wordLength     : SM<int>
     val characterValue : int -> SM<char>
     val pointValue     : int -> SM<int>
-    // val update  : string -> int -> SM<unit>
-    // val declare : string -> SM<unit>
+    val update  : string -> int -> SM<unit>
+    val declare : string -> SM<unit>
 
     val lookup  : string -> SM<int>

@@ -137,42 +137,42 @@ let main argv =
     // run BexpParse "(5 < 4 /\ 6 <= 3) \/ ~false" |> printfn "%A"
     // run BexpParse "(5 < 4 \/ 6 <= 3) \/ ~true"  |> printfn "%A"
 
-    printfn "\n\nTesting 7.11\n"
+    // printfn "\n\nTesting 7.11\n"
 
-    run stmntParse "x :=   5" |> printfn "%A"
-    run stmntParse "declare myVar" |> printfn "%A"
-    run stmntParse "declaremyVar" |> printfn "%A"
-    run stmntParse "declare x; x := 5" |> printfn "%A"
-    run stmntParse "declare x; x := 5  ;y:=7" |> printfn "%A"
-    run stmntParse "if (x < y) then { x := 5 } else { y := 7 }" |> printfn "%A"
-    run stmntParse "if (x < y) then { x := 5 }" |> printfn "%A"
-    run stmntParse "while (true) do {x5 := 0} " |> printfn "%A"
+    // run stmntParse "x :=   5" |> printfn "%A"
+    // run stmntParse "declare myVar" |> printfn "%A"
+    // run stmntParse "declaremyVar" |> printfn "%A"
+    // run stmntParse "declare x; x := 5" |> printfn "%A"
+    // run stmntParse "declare x; x := 5  ;y:=7" |> printfn "%A"
+    // run stmntParse "if (x < y) then { x := 5 } else { y := 7 }" |> printfn "%A"
+    // run stmntParse "if (x < y) then { x := 5 }" |> printfn "%A"
+    // run stmntParse "while (true) do {x5 := 0} " |> printfn "%A"
 
-    let factorial = 
-        "declare arg;
-         arg := 10;
-         declare result;
-         if (arg >= 0) then {
-             declare acc;
-             acc := 1;
-             x := 0;
-             while (arg <> x) do {
-                 x := x + 1;
-                 acc := acc * x
-             };
-             result := acc
-         }"
+    // let factorial = 
+    //     "declare arg;
+    //      arg := 10;
+    //      declare result;
+    //      if (arg >= 0) then {
+    //          declare acc;
+    //          acc := 1;
+    //          x := 0;
+    //          while (arg <> x) do {
+    //              x := x + 1;
+    //              acc := acc * x
+    //          };
+    //          result := acc
+    //      }"
     
-    run stmntParse factorial |> printfn "%A"
+    // run stmntParse factorial |> printfn "%A"
 
-    // printfn "\n\nTesting 7.12\n"
+    printfn "\n\nTesting 7.12\n"
 
-    // (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 0 0 |> printfn "%A"
-    // (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 4 0 |> printfn "%A"
-    // (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 0 42 |> printfn "%A"
-    // (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 0 0 |> printfn "%A"
-    // (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 4 0 |> printfn "%A"
-    // (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 0 42 |> printfn "%A"
+    (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 0 0 |> printfn "%A"
+    (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 4 0 |> printfn "%A"
+    (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 0 42 |> printfn "%A"
+    (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 0 0 |> printfn "%A"
+    (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 4 0 |> printfn "%A"
+    (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 0 42 |> printfn "%A"
 
     // printfn "\n\nTesting 7.13\n"
 

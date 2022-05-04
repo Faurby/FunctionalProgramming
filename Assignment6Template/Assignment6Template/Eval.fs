@@ -109,7 +109,14 @@
     | ITE of bExp * stm * stm (* if-then-else statement *)
     | While of bExp * stm     (* while statement *)
 
-    let rec stmntEval stmnt : SM<unit> = failwith "Not implemented"
+    let rec stmntEval stmnt : SM<unit> =
+        match stmnt with
+        | Declare x -> declare x
+        | Ass (x, y) -> ((arithEval y) >>= (fun a -> update x a))
+        | Skip -> ret ()
+        | Seq (x, y) -> stmntEval x >>>= stmntEval y
+        | ITE (x, y, z) -> push >>>= (boolEval x >>= (fun a -> if a then stmntEval y else stmntEval z))
+        | While (x, y) -> push >>>= (boolEval x >>= (fun a -> if a then stmntEval y >>>= stmntEval (While (x, y)) else ret ()))
 
 (* Part 3 (Optional) *)
 

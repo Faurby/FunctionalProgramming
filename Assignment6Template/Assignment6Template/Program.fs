@@ -5,188 +5,35 @@ open StateMonad
 open Eval
     
 [<EntryPoint>]
-let main argv =
-        
-    printfn "Testing lookup:"
-    printfn "%A" (lookup "x" |>                     // Success 5 
-                  evalSM state)
-    printfn "%A" (push >>>= push >>>= lookup "y" |> // Success 42
-                  evalSM state)
-    printfn "%A" (push >>>= push >>>= push >>>= lookup "z" |> // Failure (VarNotFound "z")
-                  evalSM state)
-    printfn ""
-
-    printfn "Testing pop:"
-    printfn "%A" (push >>>= pop >>>= lookup "x" |>  // Success 5
-                  evalSM state)
-    printfn "%A" (pop >>>= push >>>= lookup "x" |>  // Failure (VarNotFound "x")
-                  evalSM state)
-    printfn ""
-
-    printfn "Testing wordLength:"
-    printfn "%A" (wordLength |>                     // Success 5    
-                  evalSM state)
-    printfn "%A" (wordLength |> 
-                  evalSM emptyState)                // Success 0
-    printfn ""
-
-    printfn "Testing characterValue:"
-    printfn "%A" (characterValue 0  |>              // Success 'H'
-                  evalSM state)
-    printfn "%A" (characterValue 4  |>              // Success 'O'
-                  evalSM state)
-    printfn "%A" (characterValue 8  |>  // Failure (IndexOutOfBounds 8)
-                  evalSM state)
-    printfn ""
-    
-    printfn "Testing pointValue:"
-    printfn "%A" (pointValue 0  |>                  // Success 4
-                  evalSM state)
-    printfn "%A" (pointValue 3  |>                  // Success 1
-                  evalSM state)
-    printfn "%A" (pointValue 8  |>      // Failure (IndexOutBounds 8)
-                  evalSM state)
-    printfn ""
-
-    printfn "Testing add:"
-    printfn "%A" (add (ret 5) (ret 7)  |>            // Success 12
-                  evalSM state)
-    printfn "%A" (add (lookup "x") (lookup "y")  |>  // Success 47
-                  evalSM state)
-    printfn "%A" (add wordLength (lookup "z")  |>    // VarNotFound  
-                  evalSM state)
-    printfn ""
-
-    printfn "Testing div:"
-    printfn "%A" (div (ret 7) (ret 5)  |>           // Success 1
-                  evalSM state)
-    printfn "%A" (div (lookup "y") (lookup "x")  |>     // Success  8
-                  evalSM state)
-    printfn "%A" (div wordLength (lookup "z")  |> 
-                  evalSM state)
+let main argv =    
     // printfn "%A" (declare "z" >>>= div (lookup "x") (lookup "z")  |> 
     //               evalSM state)
     // printfn ""
 
-    // printfn "Testing update:"
-    // printfn "%A" (update "x" 7 >>>= lookup "x" |> 
-    //               evalSM state)
-    // printfn "%A" (push >>>= update "x" 7 >>>= lookup "x" |>
-    //               evalSM state)
-    // printfn "%A" (push >>>= update "x" 7 >>>= pop >>>= lookup "x" |> 
-    //               evalSM state)
-    // printfn "%A" (pop >>>= update "x" 7 >>>= push >>>= lookup "x" |> 
-    //               evalSM state)
-    // printfn "%A" (lookup "x" >>= 
-    //               (fun v1 -> lookup "y" >>= 
-    //                          (fun v2 -> update "x" (v1 + v2))) >>>= 
-    //               lookup "x" |> 
-    //               evalSM state)
-    // printfn "%A" (lookup "x" >>= 
-    //               (fun v1 -> lookup "y" >>= 
-    //                          (fun v2 -> update "x" (v1 + v2))) >>>= 
-    //               lookup "y" |> 
-    //               evalSM state)
-    // printfn ""
+    printfn "Testing stmntEval:"
+    printfn "%A" (stmntEval (Ass ("x", N 5)) >>>= lookup "x"  |> 
+                  evalSM emptyState)
+    printfn "%A" (stmntEval (Seq (Declare "x", Ass ("x", N 5))) >>>= lookup "x"  |> 
+                  evalSM emptyState)
+    printfn "%A" (stmntEval 
+                     (Seq (Declare "x", 
+                        Seq (Declare "y", 
+                             Seq (Ass ("x", WL), 
+                                  Ass ("y", N 7))))) >>>= 
+                  lookup "x" >>= (fun vx -> lookup "y" >>= (fun vy -> ret (vx, vy)))  |> 
+                  evalSM emptyState)
+    printfn "%A" (stmntEval 
+                      (Seq (Declare "x", 
+                            Seq (Declare "y", 
+                                 Seq (Ass ("x", WL), 
+                                      Ass ("y", N 7))))) >>>= 
+                  lookup "x" >>= (fun vx -> lookup "y" >>= (fun vy -> ret (vx, vy))) |> 
+                  evalSM state)
 
-    // printfn "Testing declare:"
-    // printfn "%A" (declare "z" >>>= lookup "z" |> 
-    //               evalSM state)
-    // printfn "%A" (declare "z" >>>= update "z" 123 >>>= lookup "z" |> 
-    //               evalSM state)
-    // printfn "%A" (declare "x" >>>= lookup "x" |> 
-    //               evalSM state)
-    // printfn "%A" (declare "z" >>>= declare "z" |> 
-    //               evalSM state)
-    // printfn "%A" (declare "z" >>>= update "z" 123 >>>= push >>>= 
-    //               declare "z" >>>= update "z" 456 >>>= lookup "z" |> 
-    //               evalSM state)
-    // printfn "%A" (declare "z" >>>= update "z" 123 >>>= push >>>= 
-    //               declare "z" >>>= update "z" 456 >>>= pop >>>= 
-    //               lookup "z" |> 
-    //               evalSM state)
-    // printfn "%A" (declare "_pos_" >>>= lookup "_pos_" |> 
-    //               evalSM state)
-    // printfn ""
+    printfn "ITE:\n%A" (stmntEval (ITE ((IsDigit (C('x'))), Ass ("x", N 1), Ass ("x", N 0))) |> 
+                  evalSM state)
 
-
-
-
-
-
-    // printfn "Testing arithEval:"
-    // printfn "%A" (arithEval (V "x" .+. N 10)  |> 
-    //               evalSM state)
-    // printfn "%A" (arithEval (WL .*. N 10)  |> 
-    //               evalSM state)
-    // printfn "%A" (arithEval (CharToInt (CV (N 0)))  |> 
-    //               evalSM state)
-    // printfn "%A" (arithEval (PV (N -5))  |> 
-    //               evalSM state)
-    // printfn "%A" (arithEval (V "x" .%. N 0)  |> 
-    //               evalSM state)
-    // printfn ""
-
-
-    // printfn "Testing charEval:"
-    // printfn "%A" (charEval (C 'H')  |> 
-    //               evalSM state)
-    // printfn "%A" (charEval (ToLower (CV (N 0)))  |> 
-    //               evalSM state)
-    // printfn "%A" (charEval (ToUpper (C 'h'))  |> 
-    //               evalSM state)
-    // printfn "%A" (charEval (CV (V "x" .-. N 1))  |> 
-    //               evalSM state)
-    // printfn ""
-
-
-    // printfn "Testing boolEval:"
-    // printfn "%A" (boolEval TT  |> 
-    //               evalSM state)
-    // printfn "%A" (boolEval FF  |> 
-    //               evalSM state)
-    // printfn "%A" (boolEval ((V "x" .+. V "y") .=. (V "y" .+. V "x"))  |> 
-    //               evalSM state)
-    // printfn "%A" (boolEval ((V "x" .+. V "y") .=. (V "y" .-. V "x"))  |> 
-    //               evalSM state)
-    // printfn "%A" (boolEval (IsVowel (CV (V "x")))  |> 
-    //               evalSM state)
-    // printfn "%A" (boolEval (IsLetter (CV (V "x" .-. N 1)))  |> 
-    //               evalSM state)
-    // printfn "%A" (boolEval (IsDigit (CV (N 1)))  |> 
-    //               evalSM (mkState [] [('H', 0); ('1', 0)] []))
-    // printfn "%A" (boolEval (IsDigit (CV (N 0)))  |> 
-    //               evalSM (mkState [] [('H', 0); ('1', 0)] []))
-    // printfn "%A" (boolEval (IsLetter (CV (N 1)))  |> 
-    //               evalSM (mkState [] [('H', 0); ('1', 0)] []))
-    // printfn "%A" (boolEval (IsLetter (CV (N 0)))  |> 
-    //               evalSM (mkState [] [('H', 0); ('1', 0)] []))
-    // printfn "%A" (boolEval (IsVowel (CV (V "x" .-. N 1)))  |> 
-    //               evalSM state)
-
-    // printfn ""
-
-
-    // printfn "Testing stmntEval:"
-    // printfn "%A" (stmntEval (Ass ("x", N 5)) >>>= lookup "x"  |> 
-    //               evalSM emptyState)
-    // printfn "%A" (stmntEval (Seq (Declare "x", Ass ("x", N 5))) >>>= lookup "x"  |> 
-    //               evalSM emptyState)
-    // printfn "%A" (stmntEval 
-    //                  (Seq (Declare "x", 
-    //                     Seq (Declare "y", 
-    //                          Seq (Ass ("x", WL), 
-    //                               Ass ("y", N 7))))) >>>= 
-    //               lookup "x" >>= (fun vx -> lookup "y" >>= (fun vy -> ret (vx, vy)))  |> 
-    //               evalSM emptyState)
-    // printfn "%A" (stmntEval 
-    //                   (Seq (Declare "x", 
-    //                         Seq (Declare "y", 
-    //                              Seq (Ass ("x", WL), 
-    //                                   Ass ("y", N 7))))) >>>= 
-    //               lookup "x" >>= (fun vx -> lookup "y" >>= (fun vy -> ret (vx, vy))) |> 
-    //               evalSM state)
-    // printfn ""
+    printfn ""
 
     // printfn "Testing arithEval2:"
     // printfn "%A" (arithEval2 (V "x" .+. N 10)  |> 
