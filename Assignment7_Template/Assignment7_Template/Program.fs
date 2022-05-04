@@ -50,96 +50,96 @@ let standardBoardProg : boardProg = {
 [<EntryPoint>]
 let main argv =
 
-    printfn "Testing 7.1\n"
+    // printfn "Testing 7.1\n"
 
-    run pif "if" |> printfn "%A"
-    run pif "if-some random text" |> printfn "%A"
-    run pif "ithen-some random text" |> printfn "%A"
+    // run pif "if" |> printfn "%A"
+    // run pif "if-some random text" |> printfn "%A"
+    // run pif "ithen-some random text" |> printfn "%A"
 
-    printfn "\n\nTesting 7.2\n"
+    // printfn "\n\nTesting 7.2\n"
 
-    run pletter "abcd" |> printfn "%A"
-    run pletter "1234" |> printfn "%A"
-    run palphanumeric "abcd" |> printfn "%A"
-    run palphanumeric "1234" |> printfn "%A"
-    run palphanumeric "!@#$" |> printfn "%A"
-    run whitespaceChar " hello" |> printfn "%A"
-    run whitespaceChar "hello " |> printfn "%A"
-    run spaces "            hello" |> printfn "%A"
-    run spaces "hello " |> printfn "%A"
-    run spaces1 "            hello" |> printfn "%A"
-    run spaces1 "hello " |> printfn "%A"
+    // run pletter "abcd" |> printfn "%A"
+    // run pletter "1234" |> printfn "%A"
+    // run palphanumeric "abcd" |> printfn "%A"
+    // run palphanumeric "1234" |> printfn "%A"
+    // run palphanumeric "!@#$" |> printfn "%A"
+    // run whitespaceChar " hello" |> printfn "%A"
+    // run whitespaceChar "hello " |> printfn "%A"
+    // run spaces "            hello" |> printfn "%A"
+    // run spaces "hello " |> printfn "%A"
+    // run spaces1 "            hello" |> printfn "%A"
+    // run spaces1 "hello " |> printfn "%A"
 
-    printfn "\n\nTesting 7.3\n"
+    // printfn "\n\nTesting 7.3\n"
 
-    run (pif .>*>. pthen) "if    then" |> printfn "%A"      // if, then
-    run (pif .>*> pthen) "if    then" |> printfn "%A"       // if
-    run (pif >*>. pthen) "if    then" |> printfn "%A"       // then
-    run (pif .>*>. pthen) "ifthen" |> printfn "%A"          // if, then
-    run (pif .>*>. pthen) "if   then    " |> printfn "%A"   // if, then
-    run (pif .>*>. pthen) "    if   then" |> printfn "%A"   // unexpected
-    run (pif .>*>. pthen .>*>. pelse) "if  then        else" |> printfn "%A" // (if, then) else
+    // run (pif .>*>. pthen) "if    then" |> printfn "%A"      // if, then
+    // run (pif .>*> pthen) "if    then" |> printfn "%A"       // if
+    // run (pif >*>. pthen) "if    then" |> printfn "%A"       // then
+    // run (pif .>*>. pthen) "ifthen" |> printfn "%A"          // if, then
+    // run (pif .>*>. pthen) "if   then    " |> printfn "%A"   // if, then
+    // run (pif .>*>. pthen) "    if   then" |> printfn "%A"   // unexpected
+    // run (pif .>*>. pthen .>*>. pelse) "if  then        else" |> printfn "%A" // (if, then) else
 
-    printfn "\n\nTesting 7.4\n"
+    // printfn "\n\nTesting 7.4\n"
 
-    run (parenthesise pint32)  "(    5    )" |> printfn "%A"
-    run (parenthesise pthen) "(    then )" |> printfn "%A"
-    run (parenthesise pint32)  "(    x    )" |> printfn "%A"
-    run (parenthesise pint32)  "(  5    x )" |> printfn "%A"
+    // run (parenthesise pint32)  "(    5    )" |> printfn "%A"
+    // run (parenthesise pthen) "(    then )" |> printfn "%A"
+    // run (parenthesise pint32)  "(    x    )" |> printfn "%A"
+    // run (parenthesise pint32)  "(  5    x )" |> printfn "%A"
 
-    printfn "\n\nTesting 7.5\n"
+    // printfn "\n\nTesting 7.5\n"
 
-    run pid "x" |> printfn "%A"
-    run pid "x1" |> printfn "%A"
-    run pid "1x" |> printfn "%A"
-    run pid "longVariableName" |> printfn "%A"
-    run pid "_pos_" |> printfn "%A"
+    // run pid "x" |> printfn "%A"
+    // run pid "x1" |> printfn "%A"
+    // run pid "1x" |> printfn "%A"
+    // run pid "longVariableName" |> printfn "%A"
+    // run pid "_pos_" |> printfn "%A"
 
-    printfn "\n\nTesting 7.6\n"
+    // printfn "\n\nTesting 7.6\n"
 
-    run (unop (pchar '-') pint32) "-5"                |> printfn "%A"
-    run (unop (pchar '-') pint32) "-     5"           |> printfn "%A"
-    run (unop (pchar '-') pint32 |>> ( * ) (-1)) "-5" |> printfn "%A"
-    run (unop (pchar '-') pint32) "-     x"           |> printfn "%A"
+    // run (unop (pchar '-') pint32) "-5"                |> printfn "%A"
+    // run (unop (pchar '-') pint32) "-     5"           |> printfn "%A"
+    // run (unop (pchar '-') pint32 |>> ( * ) (-1)) "-5" |> printfn "%A"
+    // run (unop (pchar '-') pint32) "-     x"           |> printfn "%A"
 
-    printfn "\n\nTesting 7.7\n"
+    // printfn "\n\nTesting 7.7\n"
 
-    run (binop (pchar '+') pint32 pint32) "5 +  7"  |> printfn "%A"
-    run (binop (pchar '+') pint32 pid) "5+var"      |> printfn "%A"
-    run (binop (pchar '+') pint32 pint32 |>>
-              (fun (a, b) -> a + b)) "5 +  7"       |> printfn "%A"
+    // run (binop (pchar '+') pint32 pint32) "5 +  7"  |> printfn "%A"
+    // run (binop (pchar '+') pint32 pid) "5+var"      |> printfn "%A"
+    // run (binop (pchar '+') pint32 pint32 |>>
+    //           (fun (a, b) -> a + b)) "5 +  7"       |> printfn "%A"
 
-    printfn "\n\nTesting 7.8\n"
+    // printfn "\n\nTesting 7.8\n"
 
-    run AexpParse "4"                      |> printfn "%A"
-    run AexpParse "x2"                     |> printfn "%A"
-    run AexpParse "5 + y * 3"              |> printfn "%A"
-    run AexpParse "(5 - y) * -3"           |> printfn "%A"
-    run AexpParse "pointValue (x % 4) / 0" |> printfn "%A"
+    // run AexpParse "4"                      |> printfn "%A"
+    // run AexpParse "x2"                     |> printfn "%A"
+    // run AexpParse "5 + y * 3"              |> printfn "%A"
+    // run AexpParse "(5 - y) * -3"           |> printfn "%A"
+    // run AexpParse "pointValue (x % 4) / 0" |> printfn "%A"
 
 
-    printfn "\n\nTesting 7.9\n"
+    // printfn "\n\nTesting 7.9\n"
 
-    run CexpParse "'x'"                                    |> printfn "%A"
-    run CexpParse "toUpper ('x')"                          |> printfn "%A"
-    run CexpParse "toLower (toUpper( 'x'))"                |> printfn "%A"
-    run CexpParse "toLower (toUpper 'x')"                  |> printfn "%A"
-    run CexpParse "intToChar  (5)"                         |> printfn "%A"
-    run CexpParse "intToChar (charToInt (' '))"            |> printfn "%A"
-    run AexpParse "charToInt (charValue (pointValue (5)))" |> printfn "%A"
+    // run CexpParse "'x'"                                    |> printfn "%A"
+    // run CexpParse "toUpper ('x')"                          |> printfn "%A"
+    // run CexpParse "toLower (toUpper( 'x'))"                |> printfn "%A"
+    // run CexpParse "toLower (toUpper 'x')"                  |> printfn "%A"
+    // run CexpParse "intToChar  (5)"                         |> printfn "%A"
+    // run CexpParse "intToChar (charToInt (' '))"            |> printfn "%A"
+    // run AexpParse "charToInt (charValue (pointValue (5)))" |> printfn "%A"
 
-    printfn "\n\nTesting 7.10\n"
+    // printfn "\n\nTesting 7.10\n"
 
-    run BexpParse "true"                        |> printfn "%A"
-    run BexpParse "false"                       |> printfn "%A"
-    run BexpParse "5 > 4 \/ 3 >= 7"             |> printfn "%A"
-    run BexpParse "~false"                      |> printfn "%A"
-    run BexpParse "(5 < 4 /\ 6 <= 3) \/ ~false" |> printfn "%A"
-    run BexpParse "(5 < 4 \/ 6 <= 3) \/ ~true"  |> printfn "%A"
+    // run BexpParse "true"                        |> printfn "%A"
+    // run BexpParse "false"                       |> printfn "%A"
+    // run BexpParse "5 > 4 \/ 3 >= 7"             |> printfn "%A"
+    // run BexpParse "~false"                      |> printfn "%A"
+    // run BexpParse "(5 < 4 /\ 6 <= 3) \/ ~false" |> printfn "%A"
+    // run BexpParse "(5 < 4 \/ 6 <= 3) \/ ~true"  |> printfn "%A"
 
     printfn "\n\nTesting 7.11\n"
 
-    run stmntParse "x := 5" |> printfn "%A"
+    run stmntParse "x :=   5" |> printfn "%A"
     run stmntParse "declare myVar" |> printfn "%A"
     run stmntParse "declaremyVar" |> printfn "%A"
     run stmntParse "declare x; x := 5" |> printfn "%A"
@@ -165,48 +165,48 @@ let main argv =
     
     run stmntParse factorial |> printfn "%A"
 
-    printfn "\n\nTesting 7.12\n"
+    // printfn "\n\nTesting 7.12\n"
 
-    (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 0 0 |> printfn "%A"
-    (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 4 0 |> printfn "%A"
-    (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 0 42 |> printfn "%A"
-    (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 0 0 |> printfn "%A"
-    (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 4 0 |> printfn "%A"
-    (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 0 42 |> printfn "%A"
+    // (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 0 0 |> printfn "%A"
+    // (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 4 0 |> printfn "%A"
+    // (parseSquareProg tripleWordScore |> Map.find 0) Eval.hello 0 42 |> printfn "%A"
+    // (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 0 0 |> printfn "%A"
+    // (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 4 0 |> printfn "%A"
+    // (parseSquareProg tripleWordScore |> Map.find 1) Eval.hello 0 42 |> printfn "%A"
 
-    printfn "\n\nTesting 7.13\n"
+    // printfn "\n\nTesting 7.13\n"
 
-    let bf = parseBoardProg standardBoardSource ((Map.map (fun _ -> parseSquareProg) squares))
-    let lookup c i acc =
-        bf c |> 
-        fun (StateMonad.Success sq) -> sq |> 
-        Option.map (fun x -> Map.find i x Eval.hello 0 acc)
+    // let bf = parseBoardProg standardBoardSource ((Map.map (fun _ -> parseSquareProg) squares))
+    // let lookup c i acc =
+    //     bf c |> 
+    //     fun (StateMonad.Success sq) -> sq |> 
+    //     Option.map (fun x -> Map.find i x Eval.hello 0 acc)
     
-    printfn "%A" (lookup (0, 0) 0 10)
-    printfn "%A" (lookup (0, 4) 0 10)
-    printfn "%A" (lookup (2, 2) 0 10)
-    printfn "%A" (lookup (3, 3) 1 10)
-    printfn "%A" (lookup (0, 7) 1 10)
-    printfn "%A" (lookup (0, 42) 0 10)
+    // printfn "%A" (lookup (0, 0) 0 10)
+    // printfn "%A" (lookup (0, 4) 0 10)
+    // printfn "%A" (lookup (2, 2) 0 10)
+    // printfn "%A" (lookup (3, 3) 1 10)
+    // printfn "%A" (lookup (0, 7) 1 10)
+    // printfn "%A" (lookup (0, 42) 0 10)
     
 
-    printfn "\n\nTesting 7.14\n"
+    // printfn "\n\nTesting 7.14\n"
 
-    let evalSquare w pos acc (m : square) =
-        let acc' = Map.find 0 m w pos acc |> fun (StateMonad.Success x) -> x
-        m |>
-        Map.tryFind 1 |>
-        Option.map (fun f -> f w pos acc' |> fun (StateMonad.Success x) -> x) |>
-        Option.defaultValue acc'
+    // let evalSquare w pos acc (m : square) =
+    //     let acc' = Map.find 0 m w pos acc |> fun (StateMonad.Success x) -> x
+    //     m |>
+    //     Map.tryFind 1 |>
+    //     Option.map (fun f -> f w pos acc' |> fun (StateMonad.Success x) -> x) |>
+    //     Option.defaultValue acc'
         
-    let board = mkBoard standardBoardProg
+    // let board = mkBoard standardBoardProg
             
-    for y in -10..10 do
-        for x in -10..10 do
-            printf "%s " (board.squares (x, y) |>
-                          (fun (StateMonad.Success sq) -> sq |> Option.map (fun x -> evalSquare Eval.hello 1 2 x |> string)) |> 
-                          Option.defaultValue "#")
-        printfn ""
+    // for y in -10..10 do
+    //     for x in -10..10 do
+    //         printf "%s " (board.squares (x, y) |>
+    //                       (fun (StateMonad.Success sq) -> sq |> Option.map (fun x -> evalSquare Eval.hello 1 2 x |> string)) |> 
+    //                       Option.defaultValue "#")
+    //     printfn ""
 
 
     0 // return an integer exit code

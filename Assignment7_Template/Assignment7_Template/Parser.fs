@@ -45,6 +45,7 @@
     let (>*>.) p1 p2  = p1 .>> spaces >>. p2
 
     let parenthesise p = pchar '(' >*>. p .>*> pchar ')'
+    let spaceParenthesise p = spaces >*>. (parenthesise p) .>*> spaces
     let curlybracket p = pchar '{' >*>. p .>*> pchar '}'
 
     let charListToStr (a: char list) = System.String.Concat(a)
@@ -117,14 +118,21 @@
 
     let BexpParse = BTerm
 
-    let SParse, sref = createParserForwardedToRef<stm>()
+    let STerm, sref = createParserForwardedToRef<stm>()
+    let SProd, spref = createParserForwardedToRef<stm>()
 
-    let declareParse = unop (pdeclare .>*>. spaces1) pid |>> Declare <?> "Declare"
-    let assignParse = binop (pstring ":=") pid AexpParse |>> Ass <?> "Assign"
-    let seqParse = binop (pchar ';') SParse SParse |>> Seq <?> "Seq"
-    
-    do sref := choice [assignParse; declareParse; seqParse]
-    let stmntParse = SParse
+
+    let seqParse = binop (pchar ';') (SProd) (SProd) |>> Seq <?> "Seq"
+    let iteParse = pif >*>. (parenthesise BTerm) .>*> pthen .>*>. (curlybracket STerm) .>*> pelse .>*>. (curlybracket STerm) |>> (fun ((a,b),c) -> ITE (a, b, c)) <?> "ITE"
+    let ifParse = pif >*>. (parenthesise BTerm) .>*> pthen .>*>. (curlybracket STerm) |>> (fun ((a,b)) -> ITE (a, b, Skip)) <?> "IT"
+    let whileParse = pwhile >*>. (parenthesise BTerm) .>*> pdo .>*>. (curlybracket STerm) |>> While <?> "While"
+    do sref := choice [seqParse; iteParse; ifParse; whileParse; SProd]
+
+    let assignParse = binop (pstring ":=") (spaces >*>. pid) (spaces >*>. AexpParse) |>> Ass <?> "Assign"
+    let declareParse = pdeclare >*>. pid |>> Declare <?> "Declare"
+    do spref := choice [assignParse; declareParse]
+
+    let stmntParse = STerm
 
 (* These five types will move out of this file once you start working on the project *)
     type coord      = int * int
