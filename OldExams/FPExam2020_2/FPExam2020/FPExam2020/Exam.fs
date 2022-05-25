@@ -15,24 +15,47 @@ module Exam2020_2
 (* module Exam2020_2 = *)
 
 (* 1: Binary search trees *)
-
     type 'a bintree = 
     | Leaf
     | Node of 'a bintree * 'a * 'a bintree
 
 (* Question 1.1 *)
+    let rec insert elem tree =
+        match tree with 
+        | Leaf                                 -> Node(Leaf, elem, Leaf)
+        | Node (left, y, right) when elem <= y -> Node(insert elem left, y, right) 
+        | Node (left, y, right)                -> Node(left, y, insert elem right)
 
-    let insert _ = failwith "not implemented"
-    
 (* Question 1.2 *)
-
-    let fromList _ = failwith "not implemented"
+    let fromList lst = 
+        let rec aux acc lst =
+            match lst with
+            | []           -> acc
+            | head :: rest -> aux (insert head acc) rest
+        aux Leaf lst
 
 (* Question 1.3 *)
+    let rec fold (f: ('a -> 'b -> 'a)) (acc: 'a) (tree: 'b bintree): 'a =
+        match tree with
+        | Leaf                     -> acc
+        | Node (left, node, right) ->
+            let leftAcc = fold f acc left
+            let currentAcc = f leftAcc node
+            let rightAcc = fold f currentAcc right
+            rightAcc
+                
+    let rec foldBack (f: ('a -> 'b -> 'a)) (acc: 'a) (tree: 'b bintree): 'a =
+        match tree with
+        | Leaf                    ->
+            acc
+        | Node (left, node, right) ->
+            let rightAcc = fold f acc right
+            let currentAcc = f rightAcc node
+            let leftAcc = fold f currentAcc left
+            leftAcc
 
-    let fold _ = failwith "not implemented"
-    let foldBack _ = failwith "not implemented"
-    let inOrder _ = failwith "not implemented"
+    let inOrder (tree: 'a bintree) = foldBack (fun acc elem -> elem :: acc) [] tree
+
 
 (* Question 1.4 *)
 
@@ -173,18 +196,49 @@ module Exam2020_2
 
 (* Question 3.1 *)
 
-    type bigInt = unit (* replace unit with the correct type declaration *)
+    type bigInt = int list (* replace unit with the correct type declaration *)
 
-    let fromString _ = failwith "not implemented"
-    let toString _ = failwith "not implemented"
+    let fromString (nums: string): bigInt =
+        (List.foldBack (fun character acc -> int character - int '0' :: acc) (List.ofSeq nums) [])
+
+    let toString (x: bigInt) = 
+        List.foldBack (fun currentInt acc -> string currentInt + acc) x "" 
 
 (* Question 3.2 *)
 
-    let add _ = failwith "not implemented"
-
+    let add (x: bigInt) (y: bigInt): bigInt =
+            
+            let num = (List.length x) - (List.length y)
+            let zList = [for i in 1 .. (abs num) -> 0]
+            
+            let x' = List.rev x
+            let y' = List.rev y
+            
+            let rec aux (first: bigInt) (second: bigInt) (acc: string) (extra: int) =
+                match first, second with
+                | [], [] when extra = 1 -> [1] @ fromString acc
+                | [], [] -> fromString acc
+                | x::xs, y::ys ->
+                    if (x + extra)+y >= 10 then
+                        aux xs ys (string (((x + extra)+y)%10) + acc) 1
+                    else
+                        aux xs ys (string ((x + extra)+y) + acc) 0
+            
+            if num > 0 then
+                aux x' (List.rev (zList @ y)) "" 0
+            else
+                aux (List.rev (zList @ x)) y' "" 0
+                
 (* Question 3.3 *)
-
-    let multSingle _ = failwith "not implemented"
+    let multSingle (a: bigInt) (b: int) =
+        if a = [0] || b = 0 then [0]
+        else
+            
+        let rec aux i acc =
+            match i with
+            | _ when i = b -> acc
+            | i' -> aux (i' + 1) (add a acc)
+        aux 0 [0]
 
 (* Question 3.4 *)
 
@@ -203,13 +257,20 @@ module Exam2020_2
 
 (* Question 4.1 *)
 
-    let step _ = failwith "not implemented"
-    let cons _ = failwith "not implemented"
+    let step (ll: 'a llist) =
+        match ll with
+        | Cons a ->
+            let (hd, tl) = a ()
+            (hd, tl)
+
+    let cons (x: 'a) (ll: 'a llist) = Cons (fun () -> (x, ll))
 
 (* Question 4.2 *)
+    
+    let rec index (f: int -> 'a) num = Cons (fun () -> (f num, index f (num+1))) 
 
-    let init _ = failwith "not implemented"
-
+    let init (f: int -> 'a) = index f 0
+        
 (* Question 4.3 *)
 
     let llmap _ = failwith "not implemented"
