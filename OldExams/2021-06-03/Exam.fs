@@ -196,35 +196,3 @@ let rec barbaz x =
 
 // figure out this shit
 
-// Questio 3
-// Create a type element that would be a good type for a single element of this sequence. There must not be a limit on
-// the size of these elements (other than memory). Why is this a good representation?
-
-type element = (int * int) list
-
-// I think this is a good representation, as we have key value pairs, the key is the a number e.g. 1, and the value
-// is the amount we have that number.
-
-let a = [(1, 1);(2,1);(3,2);]
-let b = [(1, 10)]
-
-
-// Given an element, print it as a string
-let elToString (el: element) = List.fold (fun acc ((k:int),(n:int)) -> string n + string k + acc) "" el
-
-let occurences (lst: char list) =
-    let listOfChars = "abcdefghijklmnopqrstuvwxyz" |> List.ofSeq
-    let rec aux (currentChar: char) (charToLookAt: char list) (lst: char list) =
-        match lst with
-        | [] -> 0
-        | h::t ->
-            match h with
-            | currentChar when h = currentChar->
-                printf ("found %c\n") currentChar
-                1 + aux currentChar charToLookAt t
-            | _ ->
-                printf ("did not find it\n")
-                let tmp = charToLookAt.[1..]
-                aux tmp.[0] tmp t
-    aux listOfChars.[0] listOfChars lst
-
