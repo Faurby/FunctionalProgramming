@@ -18,13 +18,34 @@ module Exam
 
 (* Question 1.1 *)
 
-    let insert _ = failwith "not implemented"
-    let insertionSort _ = failwith "not implemented"
+    let rec insert e lst =
+        match lst with
+        | [] -> [e]
+        | x :: xs when e <= x -> e::x::xs
+        | x :: xs -> x :: insert e xs
+
+    let rec insertionSort lst =
+        match lst with
+        | [] -> []
+        | x :: xs -> insert x (insertionSort xs)
     
 (* Question 1.2 *)
 
-    let insertTail _ = failwith "not implemented"
-    let insertionSortTail _ = failwith "not implemented"
+    let insertTail e lst =
+        let rec aux lst acc =
+            match lst with
+            | [] -> e::acc
+            | x :: xs when e < x -> (List.rev <| e::x::xs) @ acc
+            | x :: xs -> aux xs (x :: acc)
+        List.rev <| aux lst []
+            
+            
+    let insertionSortTail lst =
+        let rec aux lst acc =
+            match lst with
+            | [] -> acc
+            | x :: xs -> aux xs (insertTail x acc)
+        aux lst []
 
 (* Question 1.3 *)
 
@@ -32,15 +53,29 @@ module Exam
     Q: Why are the higher-order functions from the List library 
     not a good fit to implement insert?
 
-    A: <Your answer goes here>
+    In the insert function we have two base cases, the empty list and if the
+    element fits into a given spot.
+    Higher order function does not support this. Higher order functions does not
+    support not itterating through the whole list. We do not have a way of
+    returning in the middle of a fold
+    
     *)
 
-    let insertionSort2 _ = failwith "not implemented"
+    let insertionSort2 lst = List.fold (fun acc elem -> insertTail elem acc) [] lst
 
 (* Question 1.4 *)
 
-    let insertBy _ = failwith "not implemented"
-    let insertionSortBy _ = failwith "not implemented"
+    let insertBy f e lst =
+            let rec aux lst acc =
+                match lst with
+                | [] -> e::acc
+                | x :: xs when f e < f x -> (List.rev <| e::x::xs) @ acc
+                | x :: xs -> aux xs (x :: acc)
+            List.rev <| aux lst []
+            
+    let insertionSortBy f lst =
+        List.fold (fun acc elem -> insertBy f elem acc) [] lst
+        
 
 (* 2: Code Comprehension *)
     let rec foo x = 
