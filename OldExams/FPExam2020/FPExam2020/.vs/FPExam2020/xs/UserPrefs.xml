@@ -1,0 +1,31 @@
+﻿<Properties StartupConfiguration="{96942A5E-8284-44CB-AA93-A5D28674D2CE}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="FPExam2020/Program.fs">
+    <Files>
+      <File FileName="FPExam2020/Exam.fs" Line="95" Column="12" />
+      <File FileName="FPExam2020/Program.fs" Line="15" Column="1" />
+      <File FileName="FPExam2020/FPExam2020.fsproj" />
+      <File FileName="FPExam2020/ExamInteractive.fsx" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="FPExam2020" expanded="True">
+            <Node name="FPExam2020" expanded="True">
+              <Node name="Dependencies" expanded="True">
+                <Node name="SdkDependencies" expanded="True" />
+              </Node>
+              <Node name="Program.fs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.FPExam2020 PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

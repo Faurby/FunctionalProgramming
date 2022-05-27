@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>_2019_08_13</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Question 1.fs" />
+    <Compile Include="Question 2.fs" />
+    <Compile Include="Question3.fs" />
+    <Compile Include="Question 4.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+</Project>
