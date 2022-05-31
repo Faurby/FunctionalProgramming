@@ -197,7 +197,14 @@ module Exam
         function
         | [] -> []
         | [x] -> [[x]]
-        | xs  -> List.fold (fun acc elem -> (foo elem >> baz >> bar elem)xs @ acc) [] xs 
+        | xs  -> List.collect (fun y -> (foo y >> baz >> bar y) xs) xs 
+    
+//    or this, but it is not in correct rækkefølge
+//    let rec baz2 =
+//        function
+//        | [] -> []
+//        | [x] -> [[x]]
+//        | xs  -> List.fold (fun acc elem -> (foo elem >> baz >> bar elem)xs @ acc) [] xs 
 
 (* Question 2.6 *)
 
@@ -229,6 +236,24 @@ module Exam
 
     type shape = Rock | Paper | Scissor
     type result = P1Wins | P2Wins | Draw
+    
+    let mkShape s =
+        match s with
+        | "rock" -> Rock
+        | "paper" -> Paper
+        | "scissors" -> Scissor
+        
+    let resultToString r =
+        match r with
+        | P1Wins -> "playerOneWin"
+        | P2Wins-> "playerTwoWin"
+        | Draw-> "draw"
+        
+    let shapeToString s =
+        match s with
+        | Rock -> "rock"
+        | Paper -> "paper"
+        | Scissor -> "scissors"
 
     let rps s1 s2 =
         match s1, s2 with
