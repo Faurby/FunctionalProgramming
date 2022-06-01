@@ -2,15 +2,16 @@
 open Exam2021_2
 
 let testQ1 () =
-    (* Testsfor Q1.1 *)
-    printfn "Testing Question 1"
-    (*
-    printfn "%A" (length Nil)
-    printfn "%A" (length (Cons1 (3, Cons2 (true, Cons1 (4, Cons2 (false, Nil))))))
-    *)
 
+    let r1 = mkRat 2 3 |> Option.get
+    let r2 = mkRat 3 4 |> Option.get
+
+    printfn "17 / 12 = %A" <| (r1 |> evalSM (smPlus r2) |> Option.get |> snd |> ratToString)
+    printfn "-1 / 12 = %A" <| (r1 |> evalSM (smMinus r2) |> Option.get |> snd |> ratToString)
+    printfn "1 / 2 = %A" <| (r1 |> evalSM (smMult r2) |> Option.get |> snd |> ratToString)
+    printfn "8 / 9 = %A" <| (r1 |> evalSM (smDiv r2) |> Option.get |> snd |> ratToString)
+    
     ()
-
 let testQ2 () =
     printfn "Testing Question 2"
     // place debug prints for Q2 here

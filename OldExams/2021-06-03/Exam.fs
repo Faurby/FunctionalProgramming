@@ -1,198 +1,276 @@
-type direction = North | East | South | West
-type coord = C of int * int
+module Exam
 
-// Question 1.1
-let move dist dir (C(x,y))=
-    match dir with
-    | North -> C (x, y - dist)
-    | East -> C (x + dist, y)
-    | South -> C (x, y + dist)
-    | West -> C (x - dist, y)
+    type direction = North | East | South | West
+    type coord = C of int * int
 
-let turnRight dir =
-    match dir with
-    | North -> East
-    | East -> South
-    | South -> West
-    | West -> North
+    // Question 1.1
+    let move dist dir (C(x,y))=
+        match dir with
+        | North -> C (x, y - dist)
+        | East -> C (x + dist, y)
+        | South -> C (x, y + dist)
+        | West -> C (x - dist, y)
 
-let turnLeft dir =
-    match dir with
-    | North -> West
-    | East -> North
-    | South -> East
-    | West -> South
-    
-// Question 1.2
-type position = P of (coord * direction)
-type move = TurnLeft | TurnRight | Forward of int
+    let turnRight dir =
+        match dir with
+        | North -> East
+        | East -> South
+        | South -> West
+        | West -> North
 
-let step (P(C(x,y), (dir:direction))) (m: move) =
-    match m with
-    | TurnLeft -> P (C(x,y), turnLeft dir)
-    | TurnRight -> P (C(x,y), turnRight dir)
-    | Forward dist -> P (move dist dir (C(x,y)), dir)
-    
-// Question 1.3
-// recursion
-let rec walk (P(C(x,y), dir)) (ms: move list) =
-    match ms with
-    | [] -> P(C(x,y), dir)
-    | m::ms -> walk (step (P(C(x,y), dir)) m) ms
-    
-// higher order functions
-let walk2 (P(C(x,y), dir)) (ms: move list) =
-    List.fold (fun acc elem -> step acc elem) (P((C(x,y), dir))) ms
+    let turnLeft dir =
+        match dir with
+        | North -> West
+        | East -> North
+        | South -> East
+        | West -> South
+        
+    // Question 1.2
+    type position = P of (coord * direction)
+    type move = TurnLeft | TurnRight | Forward of int
 
-// Question 1.4
-let rec path (P(C(x,y), dir)) (ms: move list) : coord list=
-    match ms with
-    | [] -> [C(x,y)]
-    | m::ms ->
+    let step (P(C(x,y), (dir:direction))) (m: move) =
         match m with
-        | Forward _ ->
-            C(x,y)::path (step (P(C(x,y), dir)) m) ms
-        | _ -> path (step (P(C(x,y), dir)) m) ms
+        | TurnLeft -> P (C(x,y), turnLeft dir)
+        | TurnRight -> P (C(x,y), turnRight dir)
+        | Forward dist -> P (move dist dir (C(x,y)), dir)
         
-// Question 1.5
-let path2 (P(C(x,y), dir)) (ms: move list) =
-    let rec aux (P(C(x,y), dir)) ms acc =
+    // Question 1.3
+    // recursion
+    let rec walk (P(C(x,y), dir)) (ms: move list) =
         match ms with
-        | [] -> List.rev (C(x,y)::acc)
+        | [] -> P(C(x,y), dir)
+        | m::ms -> walk (step (P(C(x,y), dir)) m) ms
+        
+    // higher order functions
+    let walk2 (P(C(x,y), dir)) (ms: move list) =
+        List.fold (fun acc elem -> step acc elem) (P((C(x,y), dir))) ms
+
+    // Question 1.4
+    let rec path (P(C(x,y), dir)) (ms: move list) : coord list=
+        match ms with
+        | [] -> [C(x,y)]
         | m::ms ->
             match m with
             | Forward _ ->
-                aux (step (P(C(x,y), dir)) m) ms (C(x,y)::acc)
-            | _ -> aux (step (P(C(x,y), dir)) m) ms acc
-    aux (P(C(x,y), dir)) ms []
-        
-// Question 1.6
-// Explain why path is not recursive, evaluate a function call similar to what is done in
-// chapter 1.4 in HR.
+                C(x,y)::path (step (P(C(x,y), dir)) m) ms
+            | _ -> path (step (P(C(x,y), dir)) m) ms
+            
+    // Question 1.5
+    let path2 (P(C(x,y), dir)) (ms: move list) =
+        let rec aux (P(C(x,y), dir)) ms acc =
+            match ms with
+            | [] -> List.rev (C(x,y)::acc)
+            | m::ms ->
+                match m with
+                | Forward _ ->
+                    aux (step (P(C(x,y), dir)) m) ms (C(x,y)::acc)
+                | _ -> aux (step (P(C(x,y), dir)) m) ms acc
+        aux (P(C(x,y), dir)) ms []
+            
+    // Question 1.6
+    // Explain why path is not recursive, evaluate a function call similar to what is done in
+    // chapter 1.4 in HR.
 
-// tail recursion using continuation
-let path3 (P(C(x,y), dir)) (ms: move list) =
-    let rec aux (P(C(x,y), dir)) ms c =
-        match ms with
-        | [] -> c [(C(x,y))]
-        | m::ms ->
-            match m with
-            | Forward _ ->
-                aux (step (P(C(x,y), dir)) m) ms (fun acc -> C(x,y)::acc)
-            | _ -> aux (step (P(C(x,y), dir)) m) ms c
-    List.rev (aux (P(C(x,y), dir)) ms (fun acc -> C(x,y)::acc)) 
-
-// Question 2
-// Consider and run the following three functions
-let foo f =
-    let mutable m = Map.empty
-    let aux x =
-        match Map.tryFind x m with
-        | Some y when Map.containsKey x m -> y
-        | None ->
+    // tail recursion using continuation
+    let path3 (P (startCoord, startDir)) moves =
+       let rec aux f (P (coord,dir)) =
+           function
+           | [] -> f []
+           | move::moves' ->
+               match move with
+               | TurnLeft | TurnRight -> (aux f (step (P (coord,dir)) move) moves') 
+               | Forward dist ->
+                   let (P (coord',dir')) = step (P (coord,dir)) (Forward dist)
+                   aux (fun r -> f (coord'::r)) (P (coord',dir')) moves'
+       aux (fun r -> (startCoord::r)) (P (startCoord, startDir)) moves
+   
+(* 2: Code Comprehension *)
+    let foo f =
+        let mutable m = Map.empty
+        let aux x =
+            match Map.tryFind x m with
+            | Some y when Map.containsKey x m -> y
+            | None   -> 
             m <- Map.add x (f x) m; f x
-    aux
 
-let rec bar x =
-    match x with
-    | 0 -> 0
-    | 1 -> 1
-    | y -> baz (y - 1) + baz (y - 2)
-and baz = foo bar
+        aux
 
-// Question 2.1
-// What are the types of functions foo , bar , and baz ?
+    let rec bar x =
+      match x with 
+      | 0 -> 0 
+      | 1 -> 1
+      | y -> baz (y - 1) + baz (y - 2)
 
-// foo : ('a -> 'b) -> ('a -> 'b)
-// bar : recursive int -> int
-// baz : partial function int -> int
+    and baz = foo bar
 
-// What do functions foo and baz do (skip bar )? Focus on what they do rather than how they do it.
+(* Question 2.1 *)
 
-// foo takes a function as a parameter and returns a function. 
-// The function it returns, takes a key as a parameter, looks up the key in a map, and returns the value if it exists.
-// If it does not exists, it saves the result of the original function evaluated with this key in the map and returns the result
+    (* 
+    
+    Q: What are the types of functions foo, bar, and baz?
 
-// bar serves as a recursive function. It takes an integer as a parameter and returns an integer. It is fibonacci.
-// baz takes an integer as a parameter and returns an integer. It is the sum of the previous two fibonacci numbers.
+    A:
+        foo has type ('a -> 'b) -> 'a -> 'b when 'a : comparison
+        bar has type int -> int
+        baz has type int -> int
+    
 
-// All functions combined serves as the fibonacci sequence, with a map attached so we can save memory and time.
+    Q: What do functions foo and baz do (skip bar)?
+       Focus on what they do rather than how they do it.
 
-// The function foo uses a mutable variable.
-// What function does it serve (why is it there)?
+    A:
+        foo takes a function f and returns a function that given an input x returns f x.
+        
+        baz takes an integer n and returns the nth fibonacci number.
+        
+        A lot of people wrote something about the mutable variable here. This is ok, but not required
+        as that is about how the function does something and from the outside you cannot tell (except for efficiency).
+        You could write something like this:
+        
+        foo also keeps an internal cache of input-output results of f and f will only ever be run
+        once for any specific input.
 
-// So that the map can be changed dynamically by the function foo.
+    The function foo uses a mutable variable.
 
-// What would happen if you removed the mutable keyword from the line let mutable m = Map.empty ?
-// Would the function foo still work? If yes, why; if no, why not?
+    Q: What function does it serve (why is it there)?
 
-// No it would not, since the '<-' operator is only allowed on mutable variables.
+    A: The mutable keyword is used to keep a mutable map from inputs to outputs of the function argument to foo
+       
+    Q: What would happen if you removed the mutable keyword from the line
+       let mutable m = Map.empty? Would the function foo still work?
+       If yes, why; if no, why not?
 
-// What would be appropriate names for functions foo , bar , and baz ?
+    A: No, it would not even compile.
+    
+       The <- operation in
+        m <- Map.add x (f x) m
+       only works on mutable variables and the program will not compile if m is not mutable.
+       
 
-// foo : mapLookup
-// bar : aux
-// baz : fibonacci
+    Q: What would be appropriate names for functions 
+       foo, bar, and baz?
 
-// Question 2.2
-// The code includes the keyword and .
-// What function does this keyword serve in general (why would you use and when writing any program)?
+    A:
+        foo could be called memoize (it does memoization), cache, remember, or something similar.
+        bar could be called fibAux
+        baz could be called fib
+    
+    *)
+    
+    (*
+    
+    A very common problem for this assignment was the confusion with what a function does with how it does it.
+    The mutable state is squarely in how something is done not what is actually being computed, and the
+    baz function in particular had a lot of creative suggestions for how it did things rather than what it did.
+    All it does is compute fibonacci numbers. If I gave you baz as a black box you could not infer anything else
+    from it. Your safest bet would most likely be that it was a tail recursive fibonacci function since it is fast.
+    
+    Keep this in mind. The distinction is important.
+    
+    *)
+        
 
-// mutual recursion, so that the function can be called from a previous function.
+(* Question 2.2 *)
 
-// What would happen if you removed it from this particular program and replaced it with a standard let (change
-// the line and baz = foo bar to let baz = foo bar )?
+ 
+    (* 
+    The code includes the keyword "and".
 
-// The bar function would break, as it does not know of the baz function.
+    
+    Q: What function does this keyword serve in general
+       (why would you use "and" when writing any program)?
 
-// Question 2.3
-// The function foo generates a warning during compilation: Warning: Incomplete pattern matches on this
-// expression.
-// Why does this happen, and where?
+    A: and is typically used to create mutually recursive functions (functions that call each other).
+       Normally, in F#, functions can only call functions that have already been declared,
+       but when two functions are dependent on each other this causes problems since one function
+       has to be declared out of scope of the other. The and keyword gets around this by having
+       several function be in scope of each other.
 
-// In the pattern matching of the Map.tryFind. The pattern is incomplete because we match on Some y when the map contains the key x.
-// Since we have already checked if the map contains the key x, we know that the map contains the key x. If we were to only write
-// 'Some y' instead of 'Some y when ...' then the pattern would not be incomplete.
 
-// For these particular three functions will this incomplete pattern match ever cause problems for any possible
-// execution of baz ? If yes, why; if no, why not.
+    Q: What would happen if you removed it from this particular program and
+       replaced it with a standard "let"
+       (change the line "and baz = foo bar" to "let baz = foo bar")?
+       
+    A: The program would not compile as baz would no longer be in the scope of bar, and bar would not
+       be able to call baz.
 
-// No, it should not, since the check is redundant. If there is Some y, then it would mean the key exists in the map.
 
-// The function foo has two redundant computations and is hence not as efficient as it could be. What are these
-// two computations and why are they redundant?
+    *)
 
-// 'Map.containsKey x m' is redundant, since we already do this computation in the 'Map.tryFind x m'
-// '(f x)' and 'f x' it the same computation, this could also be optimized.
+(* Question 2.3 *) 
 
-// Write a function foo2 that does exactly the same thing as foo except that it does not generate any warnings
-// and is where these two redundant computations have been eliminated
+    (* 
+    The function foo generates a warning during compilation:
+    "Warning: Incomplete pattern matches on this expression.".
 
-let foo2 f =
-    let mutable m = Map.empty
-    let aux x =
-        match Map.tryFind x m with
-        | Some y -> y
-        | None ->
-            let r = f x
-            m <- Map.add x r m; r
-    aux
+    Q: Why does this happen, and where? 
 
-// Question 2.4
-let rec barbaz x =
-    let baz = foo barbaz
-    match x with
-    | 0 -> 0
-    | 1 -> 1
-    | y -> baz (y - 1) + baz (y - 2)
+    A: It happens in the Some case of the pattern match
+            match Map.tryFind x m with
+                    | Some y when Map.containsKey x m -> y
+                    | None   -> 
+                    m <- Map.add x (f x) m; f x
+        
+       as it contains a guard (Map.containsKey x m) but no case for Some where this guard is false.
 
-// baz is slower, I do not know why.
+    Q: For these particular three functions will this incomplete pattern match
+       ever cause problems for any possible execution of baz? If yes, why;
+       if no, why not.
 
-// Question 2.5
-// Write an infinite sequence bazSeq : int seq such that the first element of the sequence is equal to baz 0 , the
-// second to baz 1 , the third to baz 2 and so on.
-// For full credit it must be close to instantanous to access large indexes of the sequence. Do not worry when the
-// resulting integers overflow.
+    A: No, it will not cause a problem as we match on Map.tryFind x m and we would never
+       reach the Some case if the key x was not in the map m. This guard will always be true and is redundant.
 
-// figure out this shit
+    Q: The function foo has two redundant computations and is hence not as
+       efficient as it could be. What are these two computations and why
+       are they redundant?
+
+    A:
+        The first redundant computation is Map.containsKey x m. We know that this guard will always be true
+        because otherwise the match of Map.tryFind x m would end up in the None case.
+        
+        The second redundant computation is that we compute f x two times, in stead of only one. in the line
+        m <- Map.add x (f x) m; f x
+
+    *)
+
+    let foo2 f =
+        let mutable m = Map.empty
+        let aux x =
+            match Map.tryFind x m with
+            | Some y -> y
+            | None   ->
+                let y = f x
+                m <- Map.add x y m; y
+
+        aux
+
+(* Question 2.4 *)
+
+    let rec barbaz x =
+        let baz = foo barbaz
+        match x with 
+        | 0 -> 0 
+        | 1 -> 1
+        | y -> baz (y - 1) + baz (y - 2)
+
+    (*
+
+    Q: Without explicitly timing the execution times, compare the execution
+       times of baz and barbaz. One is slower than the other.
+       Why? You do not have to give exact times, just spot which one is
+       slower and explain why.
+
+    A: barbaz is slower as it initializes foo from scratch at every recursive call.
+       What this means is that the mutable map is reset for every recursive call which
+       in effect negates its effect entirely - previous computations of the fibonacci numbers
+       are no longer stored in this map but have to be recomputed. 
+
+    *)
+(* Question 2.5 *)
+
+    let bazSeq = Seq.initInfinite baz
+    
+    (* Note that this only works because of the caching. Typically Seq.initInfinite is a very bad fit
+       for these types of problems where an element of a sequence depends on the previous ones. *)
 

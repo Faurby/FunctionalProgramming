@@ -29,24 +29,62 @@
     | Cons1 of 'a * binList<'a, 'b>
     | Cons2 of 'b * binList<'a, 'b>
 
-    let length _ = failwith "not implemented"
+    let rec length lst =
+        match lst with
+        | Nil -> 0
+        | Cons1 (_, b) | Cons2 (_, b) -> 1 + length b
     
 (* Question 1.2 *)
-    let split _ = failwith "not implemented"
-    let length2 _ = failwith "not implemented"
+    let split lst =
+        let rec aux lst' acc1 acc2 =
+            match lst' with
+            | Nil -> (List.rev acc1, List.rev acc2)
+            | Cons1 (a, b) -> aux b (a::acc1) acc2
+            | Cons2 (a, b) -> aux b acc1 (a::acc2)
+        aux lst [] []
+    
+    let length2 lst =
+        let rec aux lst' acc1 acc2 =
+            match lst' with
+            | Nil -> acc1, acc2
+            | Cons1 (_, b) -> aux b (1 + acc1) acc2
+            | Cons2 (_, b) -> aux b acc1 (1 + acc2)
+        aux lst 0 0
 
 (* Question 1.3 *)
 
 
-    let map _ = failwith "not implemented"
+    let rec map f g lst =
+        match lst with
+        | Nil -> Nil
+        | Cons1 (a, b) -> Cons1 (f a, map f g b)
+        | Cons2 (a, b) -> Cons2 (g a, map f g b)
 
 (* Question 1.4 *)
 
-    let filter _ = failwith "not implemented"
+    let rec filter f g lst =
+        match lst with
+        | Nil -> Nil
+        | Cons1 (a, b) when f a -> Cons1 (a, filter f g b)
+        | Cons2 (a, b) when g a -> Cons2 (a, filter f g b)
+        | Cons1(_, b) | Cons2 (_, b) -> filter f g b
 
 (* Question 1.5 *)
 
-    let fold _ = failwith "not implemented"
+    let rec fold f g acc lst =
+        match lst with
+        | Nil -> acc
+        | Cons1 (a, b) -> fold f g (f acc a) b
+        | Cons2 (a, b) -> fold f g (g acc a) b
+        
+//  or this one
+//      let fold f g acc lst =
+//        let rec aux lst' acc =
+//            match lst' with
+//            | Nil -> acc
+//            | Cons1 (a, b) -> aux b (f acc a)
+//            | Cons2 (a, b) -> aux b (g acc a)
+//        aux lst acc
 
 (* 2: Code Comprehension *)
     let rec foo xs ys =
@@ -72,23 +110,29 @@
     
     Q: What are the types of functions foo and bar?
 
-    A: <Your answer goes here>
-
+    A: 
+        foo: 'a list -> 'a list -> 'a list
+        bar: 'a list -> 'a list
+    
 
     Q: What does the function bar do.
        Focus on what it does rather than how it does it.
 
-    A: <Your answer goes here>
+    A: Sorts a list using mergesort
     
     Q: What would be appropriate names for functions 
        foo and bar?
 
-    A: <Your answer goes here>
+    A:
+        bar: split
+        foo: mergesort
     
     Q: What would be appropriate names of the values a and b in bar.
     
     
-    A: <Your answer goes here>
+    A: 
+        a: left
+        b: right
     
     *)
         
@@ -103,7 +147,8 @@
     Q: What function does this keyword serve in general
        (why would you use "and" when writing any program)?
 
-    A: <Your answer goes here>
+    A: mutual recursion, function know about each other. E.g. if a function is written further down, functions earlier
+       would not know about it.
 
 
     Q: What would happen if you removed it from this particular program and
@@ -111,12 +156,21 @@
        (change the line "and bar = " to "let rec bar = ")?
        Explain why the program either does or does not work.
 
-    A: <Your answer goes here>
+    A: It should work, since foo is compiled earlier in the file.
 
     *)
 
 (* Question 2.3 *) 
-    let foo2 _ = failwith "not implemented"
+    let foo2 xs ys =
+        List.unfold (
+            fun state ->
+                match state with
+                | [], y::ys -> Some (y, ([], ys))
+                | x::xs, [] -> Some (x, (xs, []))
+                | x::xs, y::ys when x < y -> Some (x, (xs, y::ys))
+                | x::xs, y::ys -> Some (y, (x::xs, ys))
+                | _ -> None
+                ) (xs, ys)
     
     (* use the following code as a starting template
     let foo2 xs ys = List.unfold <a function goes here> (xs, ys)
@@ -138,47 +192,119 @@
     *)
 (* Question 2.5 *)
 
-    let fooTail _ = failwith "not implemented"
-
-(* Question 2.5 *)
-
-    let barTail _ = failwith "not implemented"
+    let fooTail xs ys =
+        let rec aux xs' ys' c =
+            match xs', ys' with
+            | [], ys -> c ys
+            | xs, [] -> c xs
+            | x :: xs, y :: ys when x < y -> aux xs (y::ys) (fun r -> c (x :: r))
+            | x :: xs, y :: ys -> aux (x::xs) ys (fun r -> c (y :: r))
+        aux xs ys id
 
 (* 3: Approximating square roots *)
 
 (* Question 3.1 *)
+    
+    let nearestPerfectSquare x =
+        let rec aux index prevDistance =
+            let perfectSquare = index * index
+            let currentDistance = abs (x - perfectSquare)
+            if currentDistance < prevDistance
+                then aux (index + 1) currentDistance
+            else   
+                index-1
+        aux 0 1000000
 
-    let approxSquare _ = failwith "not implemented"
+    let approxSquare x n : float =
+        let perfectSquare = nearestPerfectSquare x
+        if n = 0
+            then float perfectSquare
+        else
+            let rec aux (r: float) i =
+                match i with
+                | i when i = n -> (float) r
+                | i -> aux ((((float) x / r) + r) / 2.0) (i+1)
+            aux (float perfectSquare) 0
 
 (* Question 3.2 *)
 
-    let quadratic _ = failwith "not implemented"
+    let quadratic (a: int) (b: int) (c: int) num : (float * float) =
+        let d = (b * b) - 4 * a * c
+        let sqr = approxSquare d num
+        let (x, y) = (((float -b + sqr) / (2.0 * float a)), (( (float -b) - sqr) / (2.0 * float a)))
+        (x, y)
 
 (* Question 3.3 *)
 
-    let parQuadratic _ = failwith "not implemented"
-
+    let parQuadratic (eqs : (int * int * int) list) (numProcesses:int) (num:int) : (float * float) list =
+        List.splitInto numProcesses eqs
+            |> List.map (
+                fun eqs ->
+                    async {
+                        return List.fold (fun acc (a,b,c) -> acc@[(quadratic a b c num)]) List.empty eqs
+                    }
+            )
+            |> Async.Parallel
+            |> Async.RunSynchronously
+            |> Array.fold (fun acc r -> acc@r) []
 (* Question 3.4 *)
+    
+    open JParsec
+    open JParsec.TextParser
 
-    let solveQuadratic _ = failwith "not implemented"
+    let whitespaceChar = satisfy System.Char.IsWhiteSpace
+    let spaces = many whitespaceChar
+    
+    let (.>*>.) p1 p2 = p1 .>> spaces .>>. p2 
+    let (.>*>) p1 p2  = p1 .>> spaces .>> p2
+    let (>*>.) p1 p2  = p1 .>> spaces >>. p2
+    let operator = pchar '+' <|> pchar '-'
+
+    let solveQuadratic str num =
+        let str' = str + "\n"
+        let parser =
+            pint32 .>> pstring "x^2"
+            .>*>. operator
+            .>*>. pint32 .>> pstring "x"
+            .>*>. operator
+            .>*>. pint32
+            .>*> pchar '=' .>*> pchar '0'
+            .>> pstring "\n"
+        let result = run parser str
+        let ((((a, op1), b), op2), c) = getSuccess result
+        let b' = if op1 = '-' then -b else b
+        let c' = if op2 = '-' then -c else c
+        quadratic a b' c' num
 
 (* 4: Rational numbers *)
 
 (* Question 4.1 *)
 
-    type rat = unit (* replace this entire type with your own *)
+    type rat = (int * int)
 
 (* Question 4.2 *)
-
-    let mkRat _ = failwith "not implemented"
-    let ratToString _ = failwith "not implemented"
-
+    
+    let rec gcd x y =
+        if y = 0 then x
+        else gcd y (x % y)
+        
+    let mkRat n d =
+        let x = gcd n d
+        match (n / x, d / x) with
+        | _, 0 -> None
+        | (a', b') when a' < 0 && b' < 0 -> Some (-a', -b')
+        | (a', b') when a' < 0 || b' < 0 -> Some (-a', abs b')
+        | (a', b') -> Some (a', b')
+        
+    let ratToString ((a:int), (b:int)) =
+        string a + " / " + string b
+        
 (* Question 4.3 *)
-
-    let plus _ = failwith "not implemented"
-    let minus _ = failwith "not implemented"
-    let mult _ = failwith "not implemented"
-    let div _ = failwith "not implemented"
+    
+    let plus (a, b) (c, d) = mkRat ((a*d)+(b*c)) (b*d)
+    let minus (a, b) (c, d) = mkRat ((a*d)-(b*c)) (b*d)
+    let mult (a, b) (c, d) = mkRat (a*c) (b*d)
+    let div (a, b) (c, d) = mkRat (a*d) (b*c)
 
 (* Question 4.4 *)
 
@@ -196,11 +322,33 @@
     let (>>>=) m n = m >>= (fun () -> n)
     let evalSM (SM f) s = f s 
 
-    let smPlus _ = failwith "not implemented"
-    let smMinus _ = failwith "not implemented"
-    let smMult _ = failwith "not implemented"
-    let smDiv _ = failwith "not implemented"
+    let smPlus rat =
+        SM (fun state ->
+                match plus state rat with
+                | None -> None
+                | Some rat -> Some((), rat)
+            )
 
+    let smMinus rat =
+        SM (fun state ->
+                match minus state rat with
+                | None -> None
+                | Some rat -> Some((), rat)
+            )
+        
+    let smMult rat =
+        SM (fun state ->
+                match mult state rat with
+                | None -> None
+                | Some rat -> Some((), rat)
+            )
+        
+    let smDiv rat =
+        SM (fun state ->
+                match div state rat with
+                | None -> None
+                | Some rat -> Some((), rat)
+            )
 (* Question 4.5 *)
 
     (* You may solve this exercise either using monadic operators or 
@@ -216,4 +364,11 @@
 
     let state = new StateBuilder()
 
-    let calculate _ = failwith "not implemented"
+    let rec calculate (opList:(rat * (rat -> SM<unit>)) list) : SM<unit>=
+        state {
+             match opList with
+             | [] -> return ()
+             | (rat, f)::opList ->
+                 do! f rat
+                 return! calculate opList
+        }       
