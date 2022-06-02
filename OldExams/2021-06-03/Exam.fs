@@ -274,3 +274,166 @@ module Exam
     (* Note that this only works because of the caching. Typically Seq.initInfinite is a very bad fit
        for these types of problems where an element of a sequence depends on the previous ones. *)
 
+//Question 3
+
+    // Question 3.1
+    type element = char list
+    
+    let elToString s = List.fold (fun acc elem -> acc + (string elem)) "" s
+    
+    let elFromString (str: string) = List.ofSeq str
+    
+    let countElements elem =
+        let startElement = List.item 0 elem
+        let rec aux lst count restOfList =
+            match lst with
+            | [] -> ((count, startElement), restOfList)
+            | x :: xs when x = startElement -> aux xs (count + 1) xs
+            | _ :: _ -> ((count, startElement), restOfList)
+        aux elem 0 []
+        
+    let nextElement elem =
+        let rec aux lst result =
+            match lst with
+            | [] -> elFromString result
+            | xs ->
+                let ((count, element), restOfList) = countElements xs
+                aux restOfList (result + string count + string element)
+        aux elem ""
+    
+// Question 3.4
+    let elSeq elem =
+        Seq.unfold (fun state -> Some (state, nextElement state)) elem
+
+    let rec elSeq2 elem =
+        seq {yield elem; yield! elSeq2 (nextElement elem)}
+        
+        
+// Question 3.5
+    open JParsec.TextParser
+    open JParsec
+    
+    let elParse = many digit .>> pchar '\n' |>> (fun s -> [for c in s -> string c]) <?> "couldnt parse string"
+//    let elParseAlt = many (digit |>> (int >> (fun x -> x - int '0'))) .>> pchar '\n'
+    
+    let elFromString2 str =
+        run elParse (str + "\n") |> getSuccess
+        
+// Question 4.1
+
+    type 'a ring = 'a list * 'a list
+    
+// Question 4.2
+
+    let length (a: 'a ring) =
+        let (lst1, lst2) = a
+        List.length lst1 + List.length lst2
+        
+    let ringFromList (lst: 'a list) =
+        (List.empty<'a>,  lst)
+
+    let ringToList (ring: 'a ring) =
+        let (lst1, lst2) = ring
+        lst2 @ List.rev lst1
+
+// Question 4.3
+
+    let empty = (List.empty<'a>, List.empty<'a>)
+    
+    let push x (ring: 'a ring) =
+        let (lst1, lst2) = ring
+        match lst1, lst2 with
+        | lst1, [] -> (lst1 @ [x], lst2)
+        | lst1, lst2 -> (lst1, x :: lst2)
+    
+    let peek (ring: 'a ring) =
+        let (lst1, lst2) = ring
+        match lst1, lst2 with
+        | [], [] -> None
+        | lst1, [] -> Some (List.head (List.rev lst1))
+        | _, lst2 when not (List.isEmpty lst2 )-> Some (List.head lst2)
+        
+    let pop (ring: 'a ring) =
+        let (lst1, lst2) = ring
+        match lst1, lst2 with
+        | [], [] -> None
+        | lst1, [] -> Some (List.empty<'a>, List.tail (List.rev lst1))
+        | lst1, lst2 -> Some (lst1, (List.tail lst2))
+        
+    let cw (ring: 'a ring) =
+        let (a, b) = ring
+        match a, b with
+        | [], [] -> List.empty<'a>, List.empty<'a>
+        | [], b ->
+            let b' = List.rev b
+            (List.tail b', [List.head b'])
+        | a, b ->
+            let x = List.head a
+            (List.tail a, x :: b)
+    
+    let ccw (ring: 'a ring) =
+        let (a, b) = ring
+        match a, b with
+        | [], [] -> List.empty<'a>, List.empty<'a>
+        | a, [] ->
+            let a' = List.rev a
+            ([List.head a'], List.tail a')
+        | a, b ->
+            let x = List.head b
+            (x :: a, List.tail b)
+
+// Question 4.4
+    type StateMonad<'a, 'b> = SM of ('b ring -> ('a * 'b ring) option)
+    let ret x = SM (fun st -> Some (x, st))
+    let bind (SM m) f =
+        SM (fun st ->
+        match m st with
+        | None -> None
+        | Some (x, st') ->
+            let (SM g) = f x
+            g st')
+        
+    let (>>=) m f = bind m f
+    let (>>>=) m n = m >>= (fun () -> n)
+    let evalSM (SM f) s = f s
+    
+    let smLength = SM (fun state -> Some (length state, state))
+    let smPush x = SM (fun state -> Some ((), push x state))
+    let smPop = SM (fun state ->
+        match peek state with
+        | None -> None
+        | Some r -> Some (r, pop state |> Option.get))
+    let smCW = SM (fun state -> Some ((), cw state))
+    let smCCW = SM (fun state -> Some((), ccw state))
+    
+// Question 4.5
+    
+    type StateBuilder() =
+        member this.Bind(x, f) = bind x f
+        member this.Zero () = ret ()
+        member this.Return(x) = ret x
+        member this.ReturnFrom(x) = x
+        member this.Combine(a, b) = a >>= (fun _ -> b)
+    let state = new StateBuilder()
+    
+    let ringStep =
+        state {
+            let! l = smLength
+            if l > 1
+            then
+                let! x = smPop
+                let! y = smPop
+                if (x+y) % 2 = 1
+                then 
+                    do! smPush y
+                    do! smPush x
+                    do! smCCW
+        }
+
+    let rec iterRemoveSumEven (x: uint32) = 
+        state {
+            if x > 0u
+            then 
+                do! ringStep
+                do! iterRemoveSumEven (x-1u)
+        }

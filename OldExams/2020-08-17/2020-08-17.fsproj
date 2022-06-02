@@ -3,14 +3,13 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>_2021_06_03</RootNamespace>
+    <RootNamespace>_2020_08_17</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="JParsec.fsi" />
-    <Compile Include="JParsec.fs" />
-    <Compile Include="Exam.fs" />
     <Compile Include="Program.fs" />
+    <Compile Include="Exam.fs" />
+    <Content Include="Exam.pdf" />
   </ItemGroup>
 
 </Project>

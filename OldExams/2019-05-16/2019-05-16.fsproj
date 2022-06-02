@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Exam.fsi" />
     <Compile Include="Exam.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

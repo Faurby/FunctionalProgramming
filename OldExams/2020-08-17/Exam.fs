@@ -75,7 +75,7 @@ module Exam2020_2
     as we would expect from a map function, this  function does not do what
     we want it to do. What is the problem? Provide an example to demonstrate the problem.
 
-    A: <Your answer goes here>
+    A: Does not keep order in tree
     *)
 
     let rec map _ = failwith "not implemented"

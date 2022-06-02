@@ -5,12 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="26c8c28d-5007-47ad-8d4b-b4d2a507c952" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../2021-08-19/global.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.2021-06-03.dir/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2019-05-16/2019-05-16.fsproj" beforeDir="false" afterPath="$PROJECT_DIR$/../2019-05-16/2019-05-16.fsproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2019-05-16/Exam.fs" beforeDir="false" afterPath="$PROJECT_DIR$/../2019-05-16/Exam.fs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2019-05-16/Exam.fsi" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.2021-06-03.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.2021-06-03.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2021-06-03.fsproj" beforeDir="false" afterPath="$PROJECT_DIR$/2021-06-03.fsproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Exam.fs" beforeDir="false" afterPath="$PROJECT_DIR$/Exam.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2021-08-19/FPExam2021_2/Exam.fs" beforeDir="false" afterPath="$PROJECT_DIR$/../2021-08-19/FPExam2021_2/Exam.fs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2021-08-19/FPExam2021_2/FPExam2021_2.fsproj" beforeDir="false" afterPath="$PROJECT_DIR$/../2021-08-19/FPExam2021_2/FPExam2021_2.fsproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../2021-08-19/FPExam2021_2/Program.fs" beforeDir="false" afterPath="$PROJECT_DIR$/../2021-08-19/FPExam2021_2/Program.fs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Program.fs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.fs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +32,8 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/home/faur/Programming/FunctionalProgramming/OldExams/FPExam2020",
+    "settings.editor.selected.configurable": "editing.templates",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -62,7 +65,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1654089480413</updated>
-      <workItem from="1654089484644" duration="351000" />
+      <workItem from="1654089484644" duration="7652000" />
+      <workItem from="1654114001991" duration="9025000" />
+      <workItem from="1654168181781" duration="4527000" />
     </task>
     <servers />
   </component>

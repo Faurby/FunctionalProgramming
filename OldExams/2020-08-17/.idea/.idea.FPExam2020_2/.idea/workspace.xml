@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="cdf80361-1fe2-45fb-a2c2-c8ee4be49dd1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../2019-05-16/2019-05-16.fsproj" beforeDir="false" afterPath="$PROJECT_DIR$/../2019-05-16/2019-05-16.fsproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2019-05-16/Exam.fs" beforeDir="false" afterPath="$PROJECT_DIR$/../2019-05-16/Exam.fs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2019-05-16/Exam.fsi" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021-06-03/.idea/.idea.2021-06-03.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../2021-06-03/.idea/.idea.2021-06-03.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021-06-03/2021-06-03.fsproj" beforeDir="false" afterPath="$PROJECT_DIR$/../2021-06-03/2021-06-03.fsproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021-06-03/Exam.fs" beforeDir="false" afterPath="$PROJECT_DIR$/../2021-06-03/Exam.fs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../2021-06-03/Program.fs" beforeDir="false" afterPath="$PROJECT_DIR$/../2021-06-03/Program.fs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/Exam.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/.idea/.idea.FPExam2020_2/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/.idea/.idea.FPExam2020_2/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/.idea/.idea.FPExam2020_2/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/.idea/.idea.FPExam2020_2/.idea/indexLayout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/.idea/.idea.FPExam2020_2/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/.vs/FPExam2020/xs/UserPrefs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/.vs/FPExam2020_2/xs/UserPrefs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/FPExam2020/Exam.fs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/FPExam2020/ExamInteractive.fsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/FPExam2020/FPExam2020_2.fsproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/FPExam2020/Program.fs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/FPExam2020/FPExam2020_2.sln" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FPExam2020_2/README.pdf" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="2A1RO4Z6DikfwQ9jQC6SXlzUfBW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cdf80361-1fe2-45fb-a2c2-c8ee4be49dd1" name="Changes" comment="" />
+      <created>1654175072321</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1654175072321</updated>
+      <workItem from="1654175076020" duration="51000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>
