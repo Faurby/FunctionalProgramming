@@ -1,7 +1,6 @@
 ﻿module ImpParser
 
     open Eval
-
     (*
 
     The interfaces for JParsec and FParsecLight are identical and the implementations should always produce the same output
@@ -9,8 +8,8 @@
 
     *)
 
-    open JParsec.TextParser             // Example parser combinator library. Use for CodeJudge.
-    // open FParsecLight.TextParser     // Industrial parser-combinator library. Use for Scrabble Project.
+    //open JParsec.TextParser             // Example parser combinator library. Use for CodeJudge.
+    open FParsecLight.TextParser     // Industrial parser-combinator library. Use for Scrabble Project.
     
     let pIntToChar  = pstring "intToChar"
     let pPointValue = pstring "pointValue"
@@ -46,7 +45,7 @@
 
     let parenthesise p = pchar '(' >*>. p .>*> pchar ')'
     let spaceParenthesise p = spaces >*>. (parenthesise p) .>*> spaces
-    let curlybracket p = pchar '{' >*>. p .>*> pchar '}'
+    let curlyBrackets p = pchar '{' >*>. p .>*> pchar '}'
 
     let charListToStr (a: char list) = System.String.Concat(a)
 
@@ -118,21 +117,23 @@
 
     let BexpParse = BTerm
 
-    let STerm, sref = createParserForwardedToRef<stm>()
-    let SProd, spref = createParserForwardedToRef<stm>()
-
-
-    let seqParse = binop (pchar ';') (SProd) (SProd) |>> Seq <?> "Seq"
-    let iteParse = pif >*>. (parenthesise BTerm) .>*> pthen .>*>. (curlybracket STerm) .>*> pelse .>*>. (curlybracket STerm) |>> (fun ((a,b),c) -> ITE (a, b, c)) <?> "ITE"
-    let ifParse = pif >*>. (parenthesise BTerm) .>*> pthen .>*>. (curlybracket STerm) |>> (fun ((a,b)) -> ITE (a, b, Skip)) <?> "IT"
-    let whileParse = pwhile >*>. (parenthesise BTerm) .>*> pdo .>*>. (curlybracket STerm) |>> While <?> "While"
-    do sref := choice [seqParse; iteParse; ifParse; whileParse; SProd]
-
-    let assignParse = binop (pstring ":=") (spaces >*>. pid) (spaces >*>. AexpParse) |>> Ass <?> "Assign"
+    let SFirst, sFirstRef = createParserForwardedToRef<stm>()
+    let SSecond, sSecondRef = createParserForwardedToRef<stm>()
+    let cbParse = curlyBrackets SFirst <?> "CurlyBrackets"
+    
+    let seqParse = binop (pchar ';') SSecond SFirst |>> Seq <?> "Seq"
+    let iteParse = unop pif (parenthesise BTerm) .>*>. unop pthen cbParse .>*>. unop pelse SSecond |>> (fun ((bool, ifTrue), ifFalse) -> ITE (bool,ifTrue,ifFalse)) <?> "If-then-else"
+    let ifParse = unop pif (parenthesise BTerm) .>*>. unop pthen cbParse |>> (fun (bool, ifTrue) -> ITE (bool, ifTrue, Skip)) <?> "If-then"
+    let whileParse = unop pwhile (parenthesise BTerm) .>*>. unop pdo cbParse |>> While <?> "While-do"
+    let assignParse = binop (pstring ":=") pid TermParse |>> Ass <?> "Assign"
     let declareParse = pdeclare >*>. pid |>> Declare <?> "Declare"
-    do spref := choice [assignParse; declareParse]
+    
+    
+    do sFirstRef := choice [seqParse; SSecond]
+    do sSecondRef := choice [assignParse; declareParse;iteParse;ifParse;cbParse;whileParse]
 
-    let stmntParse = STerm
+    let stmntParse = SFirst
+    
 
 (* These five types will move out of this file once you start working on the project *)
     type coord      = int * int
@@ -149,17 +150,25 @@
 
     type word   = (char * int) list
     type square = Map<int, squareFun>
-
-    let parseSquareProg _ = failwith "not implemented"
-
-    let parseBoardProg _ = failwith "not implemented"
-
+    let parseSquareProg (sqp:Map<int,string>) = sqp |> Map.map (fun _ p -> (stmntToSquareFun (getSuccess (run stmntParse p))))
+   
     type boardFun2 = coord -> StateMonad.Result<square option, StateMonad.Error>
+    
+    let parseBoardProg (s:string) (sqs:Map<int, square>) : boardFun2 =
+        //printf "Inside parseboardProg: %A \n" sqs
+        stmntToBoardFun (getSuccess (run stmntParse s)) sqs
+
     type board = {
         center        : coord
         defaultSquare : square
         squares       : boardFun2
     }
-
-    let mkBoard (bp : boardProg) = failwith "not implemented"
-
+    let mkBoard (bp : boardProg) =
+            let squaresMap = bp.squares
+            let squares = Map.map (fun _ squareProg -> parseSquareProg squareProg) squaresMap
+            let defaultSquare = Map.find bp.usedSquare squaresMap
+            {
+                center = bp.center
+                defaultSquare = parseSquareProg defaultSquare
+                squares = parseBoardProg bp.prog squares
+            }
