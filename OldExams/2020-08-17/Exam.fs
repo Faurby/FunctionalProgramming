@@ -1,4 +1,4 @@
-module Exam2020_2
+module Exam
 (* If you are importing this into F# interactive then comment out
    the line above and remove the comment for the line bellow.
 
@@ -78,7 +78,8 @@ module Exam2020_2
     A: Does not keep order in tree
     *)
 
-    let rec map _ = failwith "not implemented"
+    let rec map f tree =
+        fold (fun acc elem -> (f elem) :: acc) [] tree |> fromList
 
 (* 2: Code Comprehension *)
     let rec foo =
@@ -100,25 +101,32 @@ module Exam2020_2
      
 
 (* Question 2.1 *)
-
+    
     (* 
     
     Q: What are the types of functions foo,  bar, and baz?
 
-    A: <Your answer goes here>
+    A: 
+        foo: _arg1: 'a list -> 'a list when 'a: comparison
+        bar: _arg1: 'a list -> bool when 'a: comparison
+        baz: _arg1: 'a list -> 'a list when 'a: comparison
 
 
     Q: What do functions ```bar```, and ```baz``` do 
        (not `foo`, we admit that it is a bit contrived)? 
        Focus on what they do rather than how they do it.
 
-    A: <Your answer goes here>
+    A: 
+        bar: takes 1 argument, a list, and checks if it is sorted
+        baz: takes 1 argument, a list, and sorts it.
 
 
     Q: What would be appropriate names for functions 
        foo, bar, and baz?
 
-    A: <Your answer goes here>
+    A: 
+        bar: isSorted
+        baz: sort
     
     *)
         
@@ -132,27 +140,37 @@ module Exam2020_2
     
     Q: Why does this happen, and where? 
 
-    A: <Your answer goes here>
+    A: 
+        in the match case, because they dont match on empty list.
 
 
     Q: For these particular three functions will this incomplete 
        pattern match ever cause problems for any possible execution of baz? 
        If yes, why; if no, why not.
 
-    A: <Your answer goes here>
+    A: No, because baz matches on empty list. So no empty list is used as argument in foo.
 
     *)
 
-    let foo2 _ = failwith "not implemented"
-    let bar2 _ = failwith "not implemented"
+    let rec foo2 =
+        function
+        | []                  -> []
+        | [x]                 -> [x]
+        | x::y::xs when x > y -> y :: (foo (x::xs))
+        | x::xs               -> x :: foo xs
+
+    let rec bar2 =
+        function
+        | []           -> true
+        | [x]          -> true
+        | x :: y :: xs -> x <= y && bar (y :: xs)
 
     (* Uncomment code to run after you have written foo2 and bar2 *)
-    (*
     let rec baz2 =
       function
       | lst when bar2 lst -> lst
       | lst               -> baz2 (foo2 lst)
-    *)
+
 
 (* Question 2.3 *) 
 
@@ -169,13 +187,32 @@ module Exam2020_2
     Q: Do the functions `foo` and `foo3` produce the same output for all possible inputs? 
        If yes, why; if no why not and provide a counter example.
 
-    A: <Your answer goes here>
+    A: 
+        
+        No because foo3 calls x :: foo3 xs, which means it appends x before the rest of the list (which it may sort), so it misses cases.
+
+        foo3 [1;2;3;2];;
+        val it: int list = [1; 2; 3; 2]
+
+        foo [1;2;3;2];;
+        val it: int list = [1; 2; 2; 3]
 
     *)
 
 (* Question 2.4 *)
+    
+//    let rec bar2 =
+//        function
+//        | []           -> true
+//        | [x]          -> true
+//        | x :: y :: xs -> x <= y && bar (y :: xs)
 
-    let bar3 _ = failwith "not implemented"
+    let bar3 lst = List.mapi (
+        fun index elem ->
+            match index with
+            | 0 -> true
+            | index -> List.item (index-1) lst <= elem
+                    ) lst |> List.forall (fun r -> r = true)
 
 (* Question 2.5 *)
 
@@ -183,15 +220,29 @@ module Exam2020_2
 
     Q: The function foo or baz is not tail recursive. Which one and why?
     
-    A: <Your answer goes here>
+    A: 
+        foo is not tail recursive, since it calls y :: foo (x::xs)
 
     *)
 
     (* ONLY implement the one that is NOT already tail recursive *)
+    
+//        let rec foo =
+//        function 
+//        | [x]                 -> [x]
+//        | x::y::xs when x > y -> y :: (foo (x::xs))
+//        | x::xs               -> x :: foo xs
 
-    let fooTail _ = failwith "not implemented"
-    let bazTail _ = failwith "not implemented"
 
+    let fooTail lst =
+        let rec aux lst c =
+            match lst with
+            | [] -> c []
+            | [x] -> c [x]
+            | x::y::xs when x > y -> aux (x::xs) (fun r -> c (y :: r))
+            | x :: xs -> aux xs (fun r -> c (x :: r))
+        aux lst id
+        
 (* 3: Big Integers *)
 
 (* Question 3.1 *)

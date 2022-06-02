@@ -276,10 +276,10 @@ module Exam
         let numScissors = opponentMoves |> List.filter (fun x -> x = Scissor) |> List.length
         let numPapers = opponentMoves |> List.filter (fun x -> x = Paper) |> List.length
         
-        if numScissors >= numPapers && numScissors >= numRocks then
-            Rock
-        elif numRocks >= numPapers && numRocks >= numScissors then
-            Paper
+        if numScissors >= numPapers && numScissors >= numRocks 
+            then Rock
+        elif numRocks >= numPapers && numRocks >= numScissors 
+            then Paper
         else
             Scissor
 
